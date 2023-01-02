@@ -1,0 +1,101 @@
+/* Numero di invoice per customer con informazioni anagrafiche e in aggiunta
+il numero totale di tracce acquistate per customer
+| customer_id | numero_di_invoice | numero_di_tracce | +info anagrafiche |
+*/
+
+--CTE 
+WITH CTE1 AS (
+	SELECT 	
+		InvoiceId,
+		SUM(Quantity) AS numero
+	FROM 
+		invoice_items ii 
+	GROUP BY
+		InvoiceId
+),
+CTE2 AS (
+	SELECT 	
+		i.CustomerId,
+		I.InvoiceId,
+		CTE1.numero
+	FROM 
+		invoices i 
+			LEFT JOIN
+				CTE1
+					ON i.InvoiceId = CTE1.invoiceid
+)
+SELECT 
+	c.CustomerId ,
+	COUNT(CTE2.invoiceid) AS n_invoices,
+	SUM(CTE2.numero) AS n_tracks,
+	c.*
+FROM 
+	customers c 
+		LEFT JOIN
+			CTE2 
+				ON c.CustomerId = CTE2.customerid
+GROUP BY 
+	c.CustomerId 
+			
+--SUBQUERY
+SELECT 
+	c.CustomerId,
+	COUNT(I.InvoiceId) AS n_invoices,
+	SUM(CTE.quantity) AS n_tracks,
+	c.*
+FROM 
+	customers c 
+		LEFT JOIN
+			invoices i 
+				ON c.CustomerId = i.CustomerId 
+					LEFT JOIN 
+						(SELECT
+							invoiceid,
+							COUNT(quantity) AS quantity
+							FROM invoice_items ii
+							GROUP BY invoiceid) CTE ON i.InvoiceId = CTE.invoiceid
+GROUP BY
+	c.CustomerId ;
+	
+--JOIN BRUTALE CON DISTINCT
+SELECT
+	c.CustomerId,
+	COUNT(DISTINCT i.InvoiceId) AS n_invoices,
+	SUM(ii.Quantity) AS n_tracks,
+	c.*
+FROM 
+	customers c 
+	LEFT JOIN
+		invoices i 
+		ON c.CustomerId = i.CustomerId 
+			LEFT JOIN 
+				invoice_items ii 
+				ON ii.InvoiceId = i.InvoiceId 
+GROUP BY 
+	C.CustomerId ;
+
+--WITH CTE CON DISTINCT
+WITH CTE AS (
+	SELECT 	
+		CustomerId,
+		COUNT(DISTINCT i.InvoiceId) AS numero_di_invoice,
+		SUM(ii.Quantity) AS numero_tracce
+	FROM 
+		invoices i
+		LEFT JOIN
+			invoice_items ii 
+				ON i.InvoiceId = ii.InvoiceId 
+	GROUP BY
+		CustomerId 
+)
+SELECT 
+	c.CustomerId,
+	CTE.numero_di_invoice AS n_invoices,
+	CTE.numero_tracce AS n_tracks,
+	c.*
+FROM 
+	CTE
+	LEFT JOIN
+		customers c ON CTE.CustomerId = c.CustomerId 
+GROUP BY 
+	c.CustomerId ;
