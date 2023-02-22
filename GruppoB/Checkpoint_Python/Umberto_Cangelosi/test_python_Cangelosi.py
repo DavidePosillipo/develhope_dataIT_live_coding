@@ -25,8 +25,16 @@ print(movies_cast)
 '''
 #INSERISCI QUI SOTTO LA TUA SOLUZIONE
 #esercizio2
-def actor_movie(movies_id, id_film = None, upper = False):
+def actor_movie(movies_id, id_film = None, upper = False, from_year=None):
 
+	if from_year:
+		for elemento in movies_id:
+			if int(from_year) > int(ia.get_movie(elemento).get('year')):
+				print(f"ho rimosso il film {ia.get_movie(elemento)} perche e' uscito nel {int(ia.get_movie(elemento).get('year'))},quindi prima del {from_year}")
+				movies_id.remove(elemento)
+				
+			
+			
 	dict_cast = {}
 	
 	#esercizio1, creo la funzione che restituisce un dizionario con i film della lista e la relativa numerosita' del cast
@@ -58,6 +66,6 @@ def actor_movie(movies_id, id_film = None, upper = False):
 		
 
 
-print(actor_movie(movies_id,'8012',True))
+print(actor_movie(movies_id,'8012',True,2020))
 
 
