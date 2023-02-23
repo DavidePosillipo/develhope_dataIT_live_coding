@@ -21,7 +21,7 @@ for scoop in scoops:
     print(scoop.flavor)
 
 # EX 2
-'''GruppoB
+'''
 For the purposes of these exercises, you are the director of IT at a zoo.
 The zoo contains several different kinds of animals, and for budget reasons, some of those animals have to be housed alongside other animals.
 We will represent the animals as Python objects, with each species defined as a distinct class.
@@ -39,10 +39,14 @@ class Animal:
         self.color = color
         
 class Sheep(Animal):
-    pass
+
+    def __init__(self, color):
+        super().__init__(color)
     
 class Wolf(Animal):
-    pass
+
+    def __init__(self, color):
+        super().__init__(color)
 
 class Snake(Animal):
     
@@ -54,13 +58,48 @@ class Parrot(Animal):
     
 white_sheep = Sheep('white')
 black_sheep = Sheep('black')
+
 gray_wolf = Wolf('gray')
 brown_wolf = Wolf('brown')
+
 green_snake = Snake('green')
 yellow_snake = Snake('yellow')
+
 rainbow_parrot = Parrot('rainbow')
 brown_parrot = Parrot('brown')
 
 print("\nAnimals' attributes:")
 for animal, animal_inst in [('white_sheep', white_sheep), ('black_sheep', black_sheep), ('gray_wolf', gray_wolf), ('brown_wolf', brown_wolf), ('green_snake', green_snake), ('yellow_snake', yellow_snake), ('rainbow_parrot', rainbow_parrot), ('brown_parrot', brown_parrot)]:
     print(f"{animal} color: {animal_inst.color}, number of legs: {animal_inst.num_of_legs}")
+
+# EX 3
+'''
+In the previous exercise, we created a Scoop class that represents one scoop of ice cream.
+If we’re really going to model the real world, though, we should have another object into which we can put the scoops.
+I thus want you to create a Bowl class, representing a bowl into which we can put our ice cream; for example:
+s1 = Scoop('chocolate')
+s2 = Scoop('vanilla')
+s3 = Scoop('persimmon')
+b = Bowl()
+b.add_scoops(s1, s2)
+b.add_scoops(s3)
+'''
+
+class Bowl():
+
+    def __init__(self):
+        self.scoops = []
+
+    def add_scoops(self, *scoops):
+            self.scoops.extend(scoops)
+
+s1 = Scoop('chocolate')
+s2 = Scoop('vanilla')
+s3 = Scoop('persimmon')
+b = Bowl()
+b.add_scoops(s1, s2)
+b.add_scoops(s3)
+
+print("\nScoops in the bowl:")
+for scoop in b.scoops:
+    print(scoop.flavor)
